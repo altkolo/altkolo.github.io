@@ -90,14 +90,7 @@
     );
   }
 
-  function labelText(host) {
-    var old = host.querySelector(".case__cursor");
-    var t = old && old.textContent.trim();
-    if (t) return t;
-    var card = host.closest(".case");
-    var title = card && card.querySelector(".case__title");
-    return title ? title.textContent.trim() : "View case";
-  }
+  var LABEL = "View Case";
 
   function attach(host) {
     if (host.__uc) return;
@@ -112,7 +105,7 @@
     label.style.color = CFG.textColor;
     label.style.padding = CFG.size * 0.18 + "px " + CFG.size * 0.36 + "px";
     label.style.fontSize = Math.max(7, CFG.size * 0.43) + "px";
-    label.textContent = labelText(host);
+    label.textContent = LABEL;
 
     var arrow = document.createElement("div");
     arrow.className = "uc-arrow";
