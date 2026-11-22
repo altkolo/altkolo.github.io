@@ -1,4 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>html.lenis, html.lenis body { height: auto; } .lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; } .lenis [data-lenis-prevent], .lenis [data-lenis-prevent-wheel], .lenis [data-lenis-prevent-touch], .lenis [data-lenis-prevent-vertical], .lenis [data-lenis-prevent-horizontal] { overscroll-behavior: contain; } .lenis.lenis-smooth iframe { pointer-events: none; } .lenis.lenis-autoToggle { transition-property: overflow; transition-duration: 1ms; transition-behavior: allow-discrete; }</style>
+</head><body>
 <meta charset="utf-8">
 <title>altkolo Portfolio</title>
 <meta name="theme-color" content="#0b0a10">
@@ -157,7 +158,7 @@ window.__caseInit=window.__gyeInit=function(root){
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var rail=body.querySelector('.gye-rail'),track=rail.querySelector('.gye-rail__track'),ticksEl=rail.querySelector('.gye-rail__ticks'),ol=rail.querySelector('ol');
   var secs=[].slice.call(body.querySelectorAll('section[data-num]'));
-  function jump(el){el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});}
+  function jump(el){if(window.__lenis&&!reduce){window.__lenis.scrollTo(el);return;}el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});}
   var items=secs.map(function(s){
     var li=document.createElement('li');
     var hit=document.createElement('button');hit.type='button';hit.className='hit';hit.setAttribute('aria-label',s.dataset.label);
@@ -329,4 +330,22 @@ to a working prototype in code.`},Fi={"heading":"About","servicesTitle":"Service
 
 
 <script src="user-cursor.js" defer></script>
+<script src="js/lenis.min.js"></script>
+<script>
+(function(){
+  if(!window.Lenis||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var navigating=false,timer;
+  var lenis=new Lenis({autoRaf:true,lerp:0.07,wheelMultiplier:0.9,
+    // during page transitions let the router own the scroll position
+    virtualScroll:function(){return !navigating;}});
+  window.__lenis=lenis;
+  function sync(){lenis.stop();lenis.start();}
+  window.addEventListener('hashchange',function(){
+    var h=location.hash;
+    if(h&&h!=='#'&&h.charAt(1)!=='/')return; // in-page anchors: keep native jump
+    navigating=true;sync();clearTimeout(timer);
+    timer=setTimeout(function(){navigating=false;sync();},800);
+  });
+})();
+</script>
 </body></html>
